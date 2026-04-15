@@ -5,9 +5,4 @@ services:
       dockerfile: Dockerfile
     ports:
       - "8501:8501"
-    volumes:
-      - parquet_data:/app/data
     restart: unless-stopped
-
-volumes:
-  parquet_data:

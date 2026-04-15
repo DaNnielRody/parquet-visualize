@@ -19,29 +19,14 @@ docker compose up --build
 
 O app fica disponivel em `http://localhost:8501`.
 
-Os dados consolidados ficam persistidos em um volume Docker nomeado, mesmo que o container seja parado ou recriado:
-
-```bash
-docker volume ls
-docker volume inspect vibe_parquet_parquet_data
-```
-
-Para parar sem apagar os dados:
-
-```bash
-docker compose down
-```
-
-Para parar e apagar tambem o volume persistente:
-
-```bash
-docker compose down -v
-```
+Os dados enviados ficam isolados por sessao de usuario e sao gravados em armazenamento temporario do container. Eles nao devem ser tratados como persistentes.
 
 ## Como funciona
 
 - Cada upload pertence a uma entidade.
-- Arquivos enviados para a mesma entidade sao consolidados em um unico dataset.
+- Arquivos enviados para a mesma entidade sao consolidados em um unico dataset dentro da sessao atual.
 - O app aceita upload de uma pasta inteira pelo navegador para ingerir todos os `.parquet`.
-- O consolidado fica salvo em `data/merged/<entidade>/dataset.parquet`.
+- O consolidado fica salvo temporariamente em um diretorio isolado da sessao, dentro de `/tmp/vibe_parquet/sessions/<session_id>/merged/<entidade>/dataset.parquet`.
 - A interface mostra tabela de colunas e preview dos dados.
+- Cada sessao enxerga apenas os proprios arquivos.
+- A sessao pode ser limpa manualmente pela interface, e sessoes antigas sao removidas automaticamente por expiracao.

@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import ast
 import json
+import tempfile
+import uuid
 from pathlib import Path
 
 import pandas as pd
@@ -12,13 +14,29 @@ from src.services.storage_service import StorageService
 from src.services.upload_service import UploadService
 
 
-DATA_ROOT = Path(__file__).resolve().parent / "data"
-storage_service = StorageService(DATA_ROOT)
 parquet_service = ParquetService()
-upload_service = UploadService(storage_service, parquet_service)
+DATA_ROOT = Path(tempfile.gettempdir()) / "vibe_parquet"
+SESSION_TTL_SECONDS = 60 * 60
+
+
+def _get_session_id() -> str:
+    session_id = st.session_state.get("session_id")
+    if session_id is None:
+        session_id = uuid.uuid4().hex
+        st.session_state["session_id"] = session_id
+    return session_id
+
+
+def _build_services() -> tuple[StorageService, UploadService]:
+    storage_service = StorageService(DATA_ROOT, _get_session_id())
+    storage_service.ensure_session_root()
+    storage_service.cleanup_stale_sessions(SESSION_TTL_SECONDS)
+    upload_service = UploadService(storage_service, parquet_service)
+    return storage_service, upload_service
 
 
 def _init_upload_state() -> None:
+    st.session_state.setdefault("session_cleared", False)
     st.session_state.setdefault("upload_entity_name", "")
     st.session_state.setdefault("upload_folder_entity_name", "")
     st.session_state.setdefault("upload_files_key", 0)
@@ -131,13 +149,33 @@ def _render_data_preview(dataframe: pd.DataFrame) -> None:
         st.dataframe(dataframe.head(100), use_container_width=True, hide_index=True)
 
 
-def render_upload_section() -> None:
+def _clear_session(storage_service: StorageService) -> None:
+    storage_service.clear_session_data()
+    st.session_state["latest_upload_result"] = None
+    st.session_state["pending_upload_reset"] = False
+    st.session_state["upload_entity_name"] = ""
+    st.session_state["upload_folder_entity_name"] = ""
+    st.session_state["upload_files_key"] += 1
+    st.session_state["session_cleared"] = True
+    st.rerun()
+
+
+def render_upload_section(storage_service: StorageService, upload_service: UploadService) -> None:
     _init_upload_state()
     st.subheader("Upload por entidade")
     st.write(
         "Envie varios arquivos `.parquet` para a mesma entidade. "
-        "Se a entidade ja existir, o novo lote sera mergeado ao consolidado salvo."
+        "Os dados ficam isolados nesta sessao e nao sao compartilhados com outros usuarios."
     )
+    st.caption("Os arquivos desta sessao sao efemeros e sao apagados ao limpar ou expirar a sessao.")
+
+    if st.session_state.get("session_cleared"):
+        st.info("Os dados temporarios desta sessao foram removidos.")
+        st.session_state["session_cleared"] = False
+
+    if st.button("Apagar dados desta sessao", type="secondary"):
+        _clear_session(storage_service)
+
     _render_latest_upload_result()
 
     form_files, form_folder = st.columns(2)
@@ -198,11 +236,11 @@ def render_upload_section() -> None:
                 st.rerun()
 
 
-def render_entities_section() -> None:
+def render_entities_section(storage_service: StorageService, upload_service: UploadService) -> None:
     st.subheader("Entidades consolidadas")
     entities = storage_service.list_entities()
     if not entities:
-        st.info("Nenhuma entidade consolidada ainda.")
+        st.info("Nenhuma entidade disponivel nesta sessao.")
         return
 
     selected_entity = st.selectbox("Selecione uma entidade", entities)
@@ -222,16 +260,17 @@ def render_entities_section() -> None:
 
 def main() -> None:
     st.set_page_config(page_title="Parquet Entity Uploader", layout="wide")
+    storage_service, upload_service = _build_services()
     st.title("Parquet Entity Uploader")
     st.caption(
-        "Upload multiplo de arquivos parquet por entidade, com merge e visualizacao tabular."
+        "Upload multiplo de arquivos parquet por entidade, com isolamento por sessao e visualizacao tabular."
     )
 
     tab_upload, tab_entities = st.tabs(["Upload", "Entidades"])
     with tab_upload:
-        render_upload_section()
+        render_upload_section(storage_service, upload_service)
     with tab_entities:
-        render_entities_section()
+        render_entities_section(storage_service, upload_service)
 
 
 if __name__ == "__main__":
