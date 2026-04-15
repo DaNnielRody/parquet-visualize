@@ -164,76 +164,49 @@ def render_upload_section(storage_service: StorageService, upload_service: Uploa
     _init_upload_state()
     st.subheader("Upload por entidade")
     st.write(
-        "Envie varios arquivos `.parquet` para a mesma entidade. "
-        "Os dados ficam isolados nesta sessao e nao sao compartilhados com outros usuarios."
+        "Envie uma pasta com arquivos `.parquet` para uma entidade. "
+        "Os dados ficam isolados nesta sessão e não são compartilhados com outros usuarios."
     )
-    st.caption("Os arquivos desta sessao sao efemeros e sao apagados ao limpar ou expirar a sessao.")
+    st.caption("Os arquivos desta sessão são efêmeros e são apagados ao limpar ou expirar a sessao.")
 
     if st.session_state.get("session_cleared"):
-        st.info("Os dados temporarios desta sessao foram removidos.")
+        st.info("Os dados temporários desta sessão foram removidos.")
         st.session_state["session_cleared"] = False
 
-    if st.button("Apagar dados desta sessao", type="secondary"):
+    if st.button("Apagar dados desta sessão", type="secondary"):
         _clear_session(storage_service)
 
     _render_latest_upload_result()
 
-    form_files, form_folder = st.columns(2)
-
-    with form_files:
-        with st.form("upload-files-form"):
-            entity_name = st.text_input(
-                "Entidade",
-                key="upload_entity_name",
-                placeholder="Ex.: clientes, pedidos, faturamento",
-            )
-            uploaded_files = st.file_uploader(
-                "Arquivos parquet",
-                type=["parquet"],
-                accept_multiple_files=True,
-                key=f"upload_files_{st.session_state['upload_files_key']}",
-            )
-            submitted_files = st.form_submit_button("Processar arquivos")
-
-        if submitted_files:
-            try:
-                result = upload_service.process_upload(entity_name, uploaded_files)
-            except Exception as exc:
-                st.error(str(exc))
-            else:
-                _store_upload_result(result)
-                st.rerun()
-
-    with form_folder:
-        with st.form("upload-folder-form"):
-            folder_entity_name = st.text_input(
-                "Entidade (opcional)",
-                key="upload_folder_entity_name",
-                placeholder="Se vazio, usa o nome da pasta.",
-            )
-            uploaded_folder_files = st.file_uploader(
-                "Upload de pasta",
-                type=["parquet"],
-                accept_multiple_files="directory",
-                key=f"upload_folder_files_{st.session_state['upload_files_key']}",
-            )
-            submitted_folder = st.form_submit_button("Processar pasta")
-
-        st.caption(
-            "Ao processar uma pasta, o nome da entidade e opcional. "
-            "Se nao for informado, o app usa o nome da pasta enviada."
+    with st.form("upload-folder-form"):
+        folder_entity_name = st.text_input(
+            "Entidade (opcional)",
+            key="upload_folder_entity_name",
+            placeholder="Se vazio, usa o nome da pasta.",
         )
+        uploaded_folder_files = st.file_uploader(
+            "Pasta com arquivos parquet",
+            type=["parquet"],
+            accept_multiple_files="directory",
+            help="Baixe a pasta com os arquivos .parquet, mova-a para esta area de upload e clique em 'Processar pasta'.",
+            key=f"upload_folder_files_{st.session_state['upload_files_key']}",
+        )
+        submitted_folder = st.form_submit_button("Processar pasta")
 
-        if submitted_folder:
-            try:
-                result = upload_service.process_folder_upload(
-                    uploaded_folder_files, folder_entity_name
-                )
-            except Exception as exc:
-                st.error(str(exc))
-            else:
-                _store_upload_result(result)
-                st.rerun()
+    st.caption(
+        "O nome da entidade é opcional. Se não for informado, o app usa o nome da pasta enviada."
+    )
+
+    if submitted_folder:
+        try:
+            result = upload_service.process_folder_upload(
+                uploaded_folder_files, folder_entity_name
+            )
+        except Exception as exc:
+            st.error(str(exc))
+        else:
+            _store_upload_result(result)
+            st.rerun()
 
 
 def render_entities_section(storage_service: StorageService, upload_service: UploadService) -> None:
