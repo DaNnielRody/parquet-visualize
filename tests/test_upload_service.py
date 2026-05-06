@@ -1,19 +1,22 @@
 from __future__ import annotations
 
+import pandas as pd
 import pytest
 
+from src.services.csv_service import CSVService
 from src.services.parquet_service import ParquetService
 from src.services.storage_service import StorageService
 from src.services.upload_service import UploadResult, UploadService
-from tests.conftest import FakeUploadedFile, make_parquet_bytes
+from tests.conftest import FakeUploadedCSVFile, FakeUploadedFile, make_parquet_bytes
 
 
 @pytest.fixture
 def services(tmp_path):
     storage = StorageService(tmp_path)
     parquet = ParquetService()
-    upload = UploadService(storage, parquet)
-    return upload, storage, parquet
+    csv = CSVService()
+    upload = UploadService(storage, parquet, csv)
+    return upload, storage, parquet, csv
 
 
 class TestSanitizeEntityName:
@@ -187,3 +190,59 @@ class TestProcessFolderUpload:
 
         with pytest.raises(ValueError, match="Schema"):
             svc.process_folder_upload(uploaded_files, "clientes")
+
+
+class TestProcessUploadCSV:
+    def test_upload_csv_returns_result(self, services):
+        svc, *_ = services
+        df = pd.DataFrame({"id": [1, 2], "name": ["a", "b"]})
+        result = svc.process_upload("clientes", [FakeUploadedCSVFile(df, "clientes.csv")])
+        assert isinstance(result, UploadResult)
+        assert result.entity_name == "clientes"
+        assert result.uploaded_files == 1
+
+    def test_upload_csv_saves_as_parquet_internally(self, services):
+        svc, storage, *_ = services
+        df = pd.DataFrame({"id": [1, 2], "name": ["a", "b"]})
+        svc.process_upload("clientes", [FakeUploadedCSVFile(df, "clientes.csv")])
+        assert storage.get_entity_dataset_path("clientes").exists()
+
+    def test_upload_csv_with_schema_entity(self, services):
+        svc, *_ = services
+        df = pd.DataFrame({"isBookedOnline": ["True", "False"], "length": ["30", "60"]})
+        result = svc.process_upload("appointment", [FakeUploadedCSVFile(df, "appt.csv")])
+        assert result.total_rows == 2
+
+    def test_mixed_csv_and_parquet(self, services, sample_df):
+        svc, *_ = services
+        csv_df = pd.DataFrame({"id": [4, 5], "name": ["d", "e"], "value": [4.0, 5.0]})
+        files = [
+            FakeUploadedFile(sample_df, "parte1.parquet"),
+            FakeUploadedCSVFile(csv_df, "parte2.csv"),
+        ]
+        result = svc.process_upload("clientes", files)
+        assert result.uploaded_files == 2
+        assert result.batch_rows == 5
+
+    def test_csv_schema_mismatch_with_existing_parquet(self, services, sample_df):
+        svc, *_ = services
+        svc.process_upload("clientes", [FakeUploadedFile(sample_df)])
+        csv_df = pd.DataFrame({"id": ["x"], "extra": ["y"]})
+        with pytest.raises(ValueError, match="Schema"):
+            svc.process_upload("clientes", [FakeUploadedCSVFile(csv_df, "clientes.csv")])
+
+
+class TestProcessFolderUploadCSV:
+    def test_folder_upload_csv_uses_folder_name(self, services):
+        svc, *_ = services
+        df = pd.DataFrame({"id": [1], "name": ["a"]})
+        files = [FakeUploadedCSVFile(df, "clientes/dados.csv")]
+        result = svc.process_folder_upload(files)
+        assert result.entity_name == "clientes"
+
+    def test_folder_upload_csv_with_explicit_entity(self, services):
+        svc, *_ = services
+        df = pd.DataFrame({"id": [1], "name": ["a"]})
+        files = [FakeUploadedCSVFile(df, "qualquer/dados.csv")]
+        result = svc.process_folder_upload(files, "Meus Clientes")
+        assert result.entity_name == "meus_clientes"

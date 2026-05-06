@@ -1,0 +1,635 @@
+[
+  {
+    "collection": "accounts_receivable",
+    "name": "AccountsReceivable",
+    "schema": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "type": "object",
+      "properties": {
+        "kind": { "type": "string" },
+        "responsibleParty": { "type": "string" },
+        "provider": { "type": "string" },
+        "clinic": { "type": "string" },
+        "responsiblePartyAmount": { "type": "string" },
+        "patientEstimate": { "type": "string" },
+        "insuranceEstimate": { "type": "string" }
+      }
+    }
+  },
+  {
+    "collection": "appointment",
+    "name": "Appointment",
+    "schema": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "type": "object",
+      "properties": {
+        "clinicName": { "type": "string" },
+        "providerName": { "type": "string" },
+        "self": { "type": "string" },
+        "kind": { "type": "string" },
+        "id": { "type": "string" },
+        "description": { "type": "string" },
+        "appointmentStatus": { "type": "string" },
+        "appointmentTags": { "type": "string" },
+        "clinic": { "type": "string" },
+        "clinicId": { "type": "string" },
+        "confirmation": { "type": "string" },
+        "confirmUrl": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" },
+        "createdBy": { "type": "string" },
+        "updatedBy": { "type": "string" },
+        "startTime": { "type": "string", "format": "date-time" },
+        "timezone": { "type": "string" },
+        "length": { "type": "number" },
+        "operatory": { "type": "string" },
+        "operatoryId": { "type": "string" },
+        "visitId": { "type": "string" },
+        "patient": { "type": "string" },
+        "patientId": { "type": "string" },
+        "provider": { "type": "string" },
+        "providerId": { "type": "string" },
+        "isBookedOnline": { "type": "boolean" }
+      }
+    }
+  },
+  {
+    "collection": "appointment_items",
+    "name": "AppointmentItems",
+    "schema": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "type": "object",
+      "properties": {
+        "kind": { "type": "string" },
+        "id": { "type": "string" },
+        "status": { "type": "string" },
+        "appointment": { "type": "string" },
+        "procedureCode": { "type": "string" },
+        "units": { "type": "number" },
+        "cost": { "type": "string" }
+      }
+    }
+  },
+  {
+    "collection": "appointment_tag",
+    "name": "AppointmentTag",
+    "schema": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "type": "object",
+      "properties": {
+        "active": { "type": "boolean" },
+        "color": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "createdBy": { "type": "string" },
+        "defaultFrequencyDays": { "type": "number" },
+        "defaultFrequencyMonths": { "type": "number" },
+        "defaultUnits": { "type": "number" },
+        "id": { "type": "number" },
+        "name": { "type": "string" },
+        "updatedAt": { "type": "string", "format": "date-time" },
+        "updatedBy": { "type": "string" },
+        "url": { "type": "string" }
+      }
+    }
+  },
+  {
+    "collection": "calendar_event_schedule",
+    "name": "CalendarEventSchedule",
+    "schema": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "type": "object",
+      "properties": {
+        "clinic_id": { "type": "string" },
+        "clinicId": { "type": "string" },
+        "kind": { "type": "string" },
+        "confirmation": { "type": "string" },
+        "provider_id": { "type": "string" },
+        "providerId": { "type": "string" },
+        "operatory_id": { "type": "string" },
+        "operatoryId": { "type": "string" },
+        "patient_id": { "type": "string" },
+        "patientId": { "type": "string" },
+        "id": { "type": "string" },
+        "length": { "type": "string" },
+        "updatedAt": { "type": "string", "format": "date-time" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "startTime": { "type": "string", "format": "date-time" },
+        "status": { "type": "string" },
+        "appointmentStatus": { "type": "string" },
+        "recurring": { "type": "boolean" },
+        "recurrence_id": { "type": "string" },
+        "recurrenceId": { "type": "string" },
+        "is_booked_online": { "type": "boolean" },
+        "isBookedOnline": { "type": "boolean" },
+        "patientSelfBookable": { "type": "boolean" },
+        "tagNames": { "type": "string" },
+        "clinic": { "type": "string" },
+        "self": { "type": "string" },
+        "provider": { "type": "string" },
+        "operatory": { "type": "string" },
+        "patient": { "type": "string" },
+        "timezone": { "type": "string" }
+      }
+    }
+  },
+  {
+    "collection": "chargeable_item",
+    "name": "ChargeableItem",
+    "schema": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "type": "object",
+      "properties": {
+        "self": { "type": "string" },
+        "kind": { "type": "string" },
+        "links": { "type": "string" },
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "type": { "type": "string" },
+        "category": { "type": "string" },
+        "description": { "type": "string" },
+        "fullDescription": { "type": "string" },
+        "patientDisplayName": { "type": "string" },
+        "active": { "type": "string" },
+        "procedureCode": { "type": "string" },
+        "cost": { "type": "number" },
+        "labRequired": { "type": "string" }
+      }
+    }
+  },
+  {
+    "collection": "clinic",
+    "name": "Clinic",
+    "schema": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "type": "object",
+      "properties": {
+        "self": { "type": "string" },
+        "kind": { "type": "string" },
+        "id": { "type": "number" },
+        "name": { "type": "string" },
+        "address": { "type": "string" },
+        "officePhone": { "type": "string" },
+        "faxPhone": { "type": "string" },
+        "email": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" },
+        "createdById": { "type": "number" },
+        "updatedById": { "type": "number" },
+        "billingNumber": { "type": "string" },
+        "website": { "type": "string" },
+        "color": { "type": "string" },
+        "isActive": { "type": "boolean" },
+        "npi": { "type": "string" },
+        "tin": { "type": "string" },
+        "taxonomyNumber": { "type": "string" },
+        "payconexGroupName": { "type": "string" },
+        "defaultProviderId": { "type": "number" },
+        "logoUuid": { "type": "string" },
+        "logoUri": { "type": "string" },
+        "photoUuid": { "type": "string" },
+        "photoUri": { "type": "string" },
+        "defaultTreatmentPlanViewId": { "type": "string" },
+        "unitLengthMinutes": { "type": "number" },
+        "timeZone": { "type": "string" },
+        "colorId": { "type": "number" },
+        "can_update": { "type": "boolean" },
+        "can_delete": { "type": "boolean" }
+      }
+    }
+  },
+  {
+    "collection": "clinic_hours",
+    "name": "ClinicHours",
+    "schema": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "type": "object",
+      "properties": {
+        "self": { "type": "string" },
+        "kind": { "type": "string" },
+        "id": { "type": "number" },
+        "clinicId": { "type": "number" },
+        "isOpen": { "type": "boolean" },
+        "day": { "type": "string" },
+        "clinicOpen": { "type": "string" },
+        "clinicDuration": { "type": "string" },
+        "scheduleOpen": { "type": "string" },
+        "scheduleDuration": { "type": "string" },
+        "validFrom": { "type": "string" },
+        "validUntil": { "type": "string" },
+        "createdById": { "type": "number" },
+        "updatedById": { "type": "number" },
+        "practiceTimezone": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      }
+    }
+  },
+  {
+    "collection": "clinic_closures",
+    "name": "ClinicClosures",
+    "schema": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "type": "object",
+      "properties": {
+        "self": { "type": "string" },
+        "kind": { "type": "string" },
+        "id": { "type": "number" },
+        "clinicId": { "type": "number" },
+        "description": { "type": "string" },
+        "start": { "type": "string", "format": "date-time" },
+        "end": { "type": "string", "format": "date-time" },
+        "isAllDay": { "type": "boolean" },
+        "can_update": { "type": "boolean" },
+        "can_delete": { "type": "boolean" },
+        "practiceTimezone": { "type": "string" },
+        "createdById": { "type": "number" },
+        "updatedById": { "type": "number" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      }
+    }
+  },
+  {
+    "collection": "clinic_operatory",
+    "name": "ClinicOperatory",
+    "schema": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "type": "object",
+      "properties": {
+        "self": { "type": "string" },
+        "kind": { "type": "string" },
+        "id": { "type": "number" },
+        "clinicId": { "type": "number" },
+        "name": { "type": "string" },
+        "shortName": { "type": "string" },
+        "color": { "type": "string" },
+        "colorId": { "type": "number" },
+        "providerId": { "type": "number" },
+        "isActive": { "type": "boolean" },
+        "isBookable": { "type": "boolean" },
+        "usePatientPreferredProvider": { "type": "boolean" },
+        "can_update": { "type": "boolean" },
+        "can_delete": { "type": "boolean" },
+        "createdById": { "type": "number" },
+        "updatedById": { "type": "number" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      }
+    }
+  },
+  {
+    "collection": "contact",
+    "name": "Contact",
+    "schema": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "type": "object",
+      "properties": {
+        "kind": { "type": "string" },
+        "self": { "type": "string" },
+        "id": { "type": "number" },
+        "firstName": { "type": "string" },
+        "middleName": { "type": "string" },
+        "lastName": { "type": "string" },
+        "nickname": { "type": "string" },
+        "gender": { "type": "string" },
+        "dateOfBirth": { "type": "string", "format": "date-time" },
+        "status": { "type": "string" },
+        "email": { "type": "string" },
+        "homePhone": { "type": "string" },
+        "workPhone": { "type": "string" },
+        "cellPhone": { "type": "string" },
+        "address": { "type": "string" },
+        "headOfHousehold": { "type": "string" },
+        "responsibleParty": { "type": "string" },
+        "preferredContactMethod": { "type": "string" },
+        "preferredClinicId": { "type": "string" },
+        "preferredClinic": { "type": "string" },
+        "preferredLanguage": { "type": "string" },
+        "createdAtUtc": { "type": "string", "format": "date-time" },
+        "updatedAtUtc": { "type": "string", "format": "date-time" },
+        "timezone": { "type": "string" }
+      }
+    }
+  },
+  {
+    "collection": "contact_note",
+    "name": "ContactNote",
+    "schema": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "self": { "type": "string" },
+        "kind": { "type": "string" },
+        "contact": { "type": "string" },
+        "description": { "type": "string" },
+        "locked": { "type": "boolean" },
+        "tags": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "links": { "type": "string" },
+        "parent_id": { "type": "string" }
+      }
+    }
+  },
+  {
+    "collection": "fee_schedule",
+    "name": "FeeSchedule",
+    "schema": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "type": "object",
+      "properties": {
+        "self": { "type": "string" },
+        "kind": { "type": "string" },
+        "links": { "type": "string" },
+        "name": { "type": "string" }
+      }
+    }
+  },
+  {
+    "collection": "fee_schedule_chargeable_items",
+    "name": "FeeScheduleChargeableItems",
+    "schema": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "type": "object",
+      "properties": {
+        "chargeableItem": { "type": "string" },
+        "cost": { "type": "string" }
+      }
+    }
+  },
+  {
+    "collection": "insurance_carrier",
+    "name": "InsuranceCarrier",
+    "schema": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "type": "object",
+      "properties": {
+        "self": { "type": "string" },
+        "kind": { "type": "string" },
+        "links": { "type": "string" },
+        "id": { "type": "string" },
+        "payerId": { "type": "string" },
+        "name": { "type": "string" }
+      }
+    }
+  },
+  {
+    "collection": "insurance_plan",
+    "name": "InsurancePlan",
+    "schema": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "type": "object",
+      "properties": {
+        "self": { "type": "string" },
+        "kind": { "type": "string" },
+        "links": { "type": "string" },
+        "id": { "type": "string" },
+        "carrier": { "type": "string" },
+        "feeSchedule": { "type": "string" },
+        "groupNo": { "type": "string" },
+        "active": { "type": "boolean" },
+        "payerId": { "type": "string" },
+        "name": { "type": "string" }
+      }
+    }
+  },
+  {
+    "collection": "insurance_policy",
+    "name": "InsurancePolicy",
+    "schema": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "type": "object",
+      "properties": {
+        "self": { "type": "string" },
+        "kind": { "type": "string" },
+        "links": { "type": "string" },
+        "id": { "type": "string" },
+        "plan": { "type": "string" },
+        "active": { "type": "boolean" },
+        "patients": { "type": "string" },
+        "subscriber": { "type": "string" },
+        "carrierSubscriberId": { "type": "string" }
+      }
+    }
+  },
+  {
+    "collection": "ledger_entry",
+    "name": "LedgerEntry",
+    "schema": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "type": "object",
+      "properties": {
+        "kind": { "type": "string" },
+        "id": { "type": "string" },
+        "account": { "type": "string" },
+        "amount": { "type": "string" },
+        "patientId": { "type": "string" },
+        "provider": { "type": "string" },
+        "provider2": { "type": "string" },
+        "clinic": { "type": "string" },
+        "postedOn": { "type": "string", "format": "date-time" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "insuranceCode": { "type": "string" },
+        "description": { "type": "string" },
+        "transactionId": { "type": "string" },
+        "transactionType": { "type": "string" },
+        "adjustmentType": { "type": "string" },
+        "adjustmentCategory": { "type": "string" },
+        "insurancePayer": { "type": "string" },
+        "customPayer": { "type": "string" },
+        "calculations": { "type": "string" },
+        "responsibleParty": { "type": "string" },
+        "appointment": { "type": "string" },
+        "appointmentItem": { "type": "string" }
+      }
+    }
+  },
+  {
+    "collection": "patient",
+    "name": "Patient",
+    "schema": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "type": "object",
+      "properties": {
+        "id": { "type": "number" },
+        "self": { "type": "string" },
+        "kind": { "type": "string" },
+        "householdHeadContact": { "type": "string" },
+        "householdHeadContactId": { "type": "string" },
+        "headOfHousehold": { "type": "string" },
+        "responsiblePartyContact": { "type": "string" },
+        "responsiblePartyContactId": { "type": "string" },
+        "firstName": { "type": "string" },
+        "middleName": { "type": "string" },
+        "lastName": { "type": "string" },
+        "preferredName": { "type": "string" },
+        "preferredLanguage": { "type": "string" },
+        "dob": { "type": "string", "format": "date-time" },
+        "dateOfBirth": { "type": "string", "format": "date-time" },
+        "email": { "type": "string" },
+        "gender": { "type": "string" },
+        "status": { "type": "string" },
+        "homePhone": { "type": "string" },
+        "cellPhone": { "type": "string" },
+        "workPhone": { "type": "string" },
+        "preferredClinic": { "type": "string" },
+        "preferredClinicId": { "type": "string" },
+        "defaultDentist": { "type": "string" },
+        "defaultDentistId": { "type": "string" },
+        "defaultHygienist": { "type": "string" },
+        "defaultHygienistId": { "type": "string" },
+        "preferredContactMethod": { "type": "string" },
+        "defaultFeeScheduleId": { "type": "string" },
+        "address": { "type": "string" },
+        "billingAddress": { "type": "string" },
+        "alerts": { "type": "string" },
+        "clientNumber": { "type": "string" },
+        "referredByContacts": { "type": "string" }
+      }
+    }
+  },
+  {
+    "collection": "patient_note",
+    "name": "PatientNote",
+    "schema": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "self": { "type": "string" },
+        "kind": { "type": "string" },
+        "patient": { "type": "string" },
+        "description": { "type": "string" },
+        "locked": { "type": "boolean" },
+        "tags": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "appointment": { "type": "string" },
+        "links": { "type": "string" },
+        "parent_id": { "type": "string" }
+      }
+    }
+  },
+  {
+    "collection": "practice",
+    "name": "Practice",
+    "schema": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "type": "object",
+      "properties": {
+        "self": { "type": "string" },
+        "kind": { "type": "string" },
+        "name": { "type": "string" },
+        "website": { "type": "string" },
+        "time_zone": { "type": "string" },
+        "ianaTimeZone": { "type": "string" },
+        "password_change_frequency": { "type": "number" },
+        "color": { "type": "string" },
+        "logoUuid": { "type": "string" },
+        "logoUri": { "type": "string" },
+        "photoUuid": { "type": "string" },
+        "photoUri": { "type": "string" },
+        "color_id": { "type": "number" },
+        "appointmentUnitLength": { "type": "number" },
+        "can_update": { "type": "boolean" },
+        "can_create_clinic": { "type": "boolean" },
+        "can_create_bank_account": { "type": "boolean" },
+        "links": { "type": "string" }
+      }
+    }
+  },
+  {
+    "collection": "staff",
+    "name": "Staff",
+    "schema": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "type": "object",
+      "properties": {
+        "self": { "type": "string" },
+        "id": { "type": "string" },
+        "kind": { "type": "string" },
+        "firstName": { "type": "string" },
+        "lastName": { "type": "string" },
+        "shortName": { "type": "string" },
+        "username": { "type": "string" },
+        "birthDate": { "type": "string", "format": "date-time" },
+        "homePhone": { "type": "string" },
+        "workPhone": { "type": "string" },
+        "cellPhone": { "type": "string" },
+        "fax": { "type": "string" },
+        "email": { "type": "string" },
+        "preferredContactMethod": { "type": "string" },
+        "nickname": { "type": "string" },
+        "color": { "type": "string" },
+        "colorId": { "type": "number" },
+        "status": { "type": "string" },
+        "profileImageId": { "type": "string" },
+        "profileImageUrl": { "type": "string" },
+        "links": { "type": "string" },
+        "clinics": { "type": "string" },
+        "roles": { "type": "string" },
+        "hasPassword": { "type": "boolean" },
+        "isAccountLocked": { "type": "boolean" }
+      }
+    }
+  },
+  {
+    "collection": "staff_hours",
+    "name": "StaffHours",
+    "schema": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "type": "object",
+      "properties": {
+        "access": { "type": "string" },
+        "hours": { "type": "string" }
+      }
+    }
+  },
+  {
+    "collection": "treatment_plan",
+    "name": "TreatmentPlan",
+    "schema": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "type": "object",
+      "properties": {
+        "self": { "type": "string" },
+        "kind": { "type": "string" },
+        "links": { "type": "string" },
+        "id": { "type": "string" },
+        "patient": { "type": "string" },
+        "createdAtClinic": { "type": "string" },
+        "name": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" },
+        "visits": { "type": "string" }
+      }
+    }
+  },
+  {
+    "collection": "treatment_plan_item",
+    "name": "TreatmentPlanItem",
+    "schema": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "type": "object",
+      "properties": {
+        "self": { "type": "string" },
+        "kind": { "type": "string" },
+        "links": { "type": "string" },
+        "id": { "type": "string" },
+        "visit": { "type": "string" },
+        "seq": { "type": "number" },
+        "chargeableItem": { "type": "string" },
+        "provider": { "type": "string" },
+        "units": { "type": "number" },
+        "tooth": { "type": "string" },
+        "arch": { "type": "string" },
+        "surfaces": { "type": "string" },
+        "quadrant": { "type": "string" },
+        "sextant": { "type": "string" },
+        "material": { "type": "string" },
+        "active": { "type": "boolean" },
+        "amount": { "type": "string" },
+        "insuranceEstimates": { "type": "string" }
+      }
+    }
+  }
+]

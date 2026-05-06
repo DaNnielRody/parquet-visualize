@@ -6,6 +6,7 @@ from pathlib import Path
 
 import pandas as pd
 
+from src.services.csv_service import CSVService
 from src.services.parquet_service import ParquetService, SchemaMismatch
 from src.services.storage_service import StorageService
 
@@ -23,22 +24,36 @@ class UploadResult:
 
 class UploadService:
     def __init__(
-        self, storage_service: StorageService, parquet_service: ParquetService
+        self,
+        storage_service: StorageService,
+        parquet_service: ParquetService,
+        csv_service: CSVService | None = None,
     ) -> None:
         self.storage_service = storage_service
         self.parquet_service = parquet_service
+        self.csv_service = csv_service
 
     def sanitize_entity_name(self, entity_name: str) -> str:
         sanitized = re.sub(r"[^a-zA-Z0-9_-]+", "_", entity_name.strip().lower())
         return sanitized.strip("_")
 
+    def _load_uploaded_file(
+        self, uploaded_file, entity_name: str | None = None
+    ) -> pd.DataFrame:
+        name = getattr(uploaded_file, "name", "").lower()
+        if name.endswith(".csv"):
+            if self.csv_service is None:
+                raise ValueError("Arquivo CSV nao suportado nesta configuracao.")
+            return self.csv_service.load_uploaded_csv(uploaded_file, entity_name)
+        return self.parquet_service.load_uploaded_parquet(uploaded_file)
+
     def process_upload(self, entity_name: str, uploaded_files: list) -> UploadResult:
         normalized_name = self._resolve_entity_name(entity_name)
         if not uploaded_files:
-            raise ValueError("Selecione ao menos um arquivo parquet.")
+            raise ValueError("Selecione ao menos um arquivo.")
 
         batch_frames = [
-            self.parquet_service.load_uploaded_parquet(uploaded_file)
+            self._load_uploaded_file(uploaded_file, normalized_name)
             for uploaded_file in uploaded_files
         ]
         return self._finalize_upload(normalized_name, batch_frames, len(uploaded_files))
@@ -47,13 +62,13 @@ class UploadService:
         self, uploaded_files: list, entity_name: str = ""
     ) -> UploadResult:
         if not uploaded_files:
-            raise ValueError("Selecione ao menos uma pasta com arquivos parquet.")
+            raise ValueError("Selecione ao menos uma pasta com arquivos.")
 
         normalized_name = self._resolve_entity_name(
             entity_name, fallback_name=self._infer_folder_name(uploaded_files)
         )
         batch_frames = [
-            self.parquet_service.load_uploaded_parquet(uploaded_file)
+            self._load_uploaded_file(uploaded_file, normalized_name)
             for uploaded_file in uploaded_files
         ]
         return self._finalize_upload(normalized_name, batch_frames, len(uploaded_files))

@@ -24,6 +24,15 @@ class FakeUploadedFile:
         return self._data
 
 
+class FakeUploadedCSVFile:
+    def __init__(self, df: pd.DataFrame, name: str = "arquivo.csv", sep: str = ",") -> None:
+        self._data = df.to_csv(index=False, sep=sep).encode("utf-8")
+        self.name = name
+
+    def getvalue(self) -> bytes:
+        return self._data
+
+
 @pytest.fixture
 def sample_df() -> pd.DataFrame:
     return pd.DataFrame({"id": [1, 2, 3], "name": ["a", "b", "c"], "value": [1.0, 2.0, 3.0]})

@@ -9,12 +9,15 @@ from pathlib import Path
 import pandas as pd
 import streamlit as st
 
+from src.services.csv_service import CSVService
 from src.services.parquet_service import ParquetService
+from src.services.schema_service import SchemaService
 from src.services.storage_service import StorageService
 from src.services.upload_service import UploadService
 
 
 parquet_service = ParquetService()
+csv_service = CSVService(SchemaService())
 DATA_ROOT = Path(tempfile.gettempdir()) / "vibe_parquet"
 SESSION_TTL_SECONDS = 60 * 60
 
@@ -31,7 +34,7 @@ def _build_services() -> tuple[StorageService, UploadService]:
     storage_service = StorageService(DATA_ROOT, _get_session_id())
     storage_service.ensure_session_root()
     storage_service.cleanup_stale_sessions(SESSION_TTL_SECONDS)
-    upload_service = UploadService(storage_service, parquet_service)
+    upload_service = UploadService(storage_service, parquet_service, csv_service)
     return storage_service, upload_service
 
 
@@ -185,16 +188,18 @@ def render_upload_section(storage_service: StorageService, upload_service: Uploa
             placeholder="Se vazio, usa o nome da pasta.",
         )
         uploaded_folder_files = st.file_uploader(
-            "Pasta com arquivos parquet",
-            type=["parquet"],
+            "Pasta com arquivos parquet ou csv",
+            type=["parquet", "csv"],
             accept_multiple_files="directory",
-            help="Baixe a pasta com os arquivos .parquet, mova-a para esta area de upload e clique em 'Processar pasta'.",
+            help="Baixe a pasta com os arquivos .parquet ou .csv, mova-a para esta area de upload e clique em 'Processar pasta'.",
             key=f"upload_folder_files_{st.session_state['upload_files_key']}",
         )
         submitted_folder = st.form_submit_button("Processar pasta")
 
     st.caption(
-        "O nome da entidade é opcional. Se não for informado, o app usa o nome da pasta enviada."
+        "O nome da entidade é opcional. Se não for informado, o app usa o nome da pasta enviada. "
+        "Para CSV, o app usa o curve-schema.json para inferir tipos (boolean, number, date-time), "
+        "deixando o pandas inferir campos genéricos."
     )
 
     if submitted_folder:
